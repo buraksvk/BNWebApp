@@ -11,9 +11,7 @@ import {
   Triangle
 } from 'react-feather';
 import DashHeader, { Notification } from './styles/Header';
-import ModalLogin from '../demos/antd/login-form';
-import ModalAll from '../demos/antd/login';
-
+import ModalLogin from './sign_in_sign_up_Component/login-form';                            //
 import Link from 'next/link';
 import MockNotifications from '../demos/mock/notifications';
 import { useAppState } from './shared/AppProvider';
@@ -47,7 +45,7 @@ const MainHeader = () => {
         <Menu mode="horizontal" className="menu-divider">
           {!state.mobile && (
             <Menu.Item>
-              <Link href="">
+              <Link href="homepage">
                 <a>ANASAYFA</a>
               </Link>
             </Menu.Item>
@@ -55,7 +53,7 @@ const MainHeader = () => {
 
           {!state.mobile && (
             <Menu.Item>
-              <Link href="">
+              <Link href="products">
                 <a>ÜRÜNLERİMİZ</a>
               </Link>
             </Menu.Item>
@@ -63,17 +61,35 @@ const MainHeader = () => {
 
           {!state.mobile && (
             <Menu.Item>
-              <Link href="">
+              <Link href="iletisim">
                 <a>İLETİŞİM</a>
+              </Link>
+            </Menu.Item>
+          )}
+
+          {!state.mobile && (
+            <Menu.Item>
+              <Link href="logout">
+                <a>ÇIKIŞ YAP</a>
+              </Link>
+            </Menu.Item>
+          )}
+
+          {!state.mobile && (
+            <Menu.Item>
+              <Link href="about">
+                <a>Login</a>
               </Link>
             </Menu.Item>
           )}
 
           {state.mobile && (
             <SubMenu title={<ChevronsDown size={20} strokeWidth={1} />}>
-              <Menu.Item>Calendar</Menu.Item>
-              <Menu.Item>Messages</Menu.Item>
-              <Menu.Item>Social</Menu.Item>
+              <Menu.Item><Link href="homepage"><a>ANASAYFA</a></Link></Menu.Item>
+              <Menu.Item><Link href="products"><a>ÜRÜNLERİMİZ</a></Link></Menu.Item>
+              <Menu.Item><Link href="iletisim"><a>İLETİŞİM</a></Link></Menu.Item>
+              <Menu.Item><Link href="about"><a>HAKKIMIZDA</a></Link></Menu.Item>
+              
             </SubMenu>
           )}
         </Menu>
@@ -97,14 +113,22 @@ const MainHeader = () => {
               </Link>
             </Menu.Item>
           )}
+
           {!state.mobile && (
-          <Menu.Item><ModalLogin /></Menu.Item>
+            <Menu.Item>
+              <Link href="logout">
+                <a>ÇIKIŞ YAP</a>
+              </Link>
+            </Menu.Item>
+          )}  
+          {!state.mobile && (
+          <Menu.Item><ModalLogin/></Menu.Item>
           )}
           {state.mobile && (
             <SubMenu title={<ChevronsDown size={20} strokeWidth={1} />}>
               <Menu.Item><User /></Menu.Item>
               <Menu.Item><ShoppingCart /></Menu.Item>
-              <Menu.Item><ModalLogin /></Menu.Item>
+              <Menu.Item><Link href="logout"><a>ÇIKIŞ YAP</a></Link></Menu.Item>
             </SubMenu>
           )}
         </Menu>

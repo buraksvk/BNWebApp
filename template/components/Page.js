@@ -13,7 +13,11 @@ import { withRouter } from 'next/router';
 const { Content } = Layout;
 
 const NonDashboardRoutes = [
-  '/homepage'
+  '/homepage',
+  '/urunler',
+  '/contact',
+  '/profile',
+  '/about'
 ];
 const RenderHeader = () => {
   return (
