@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 import * as authActions from "../../redux/actions/authActions";
 import { bindActionCreators } from "redux";
 import * as productActions from "../../redux/actions/productActions";
+import * as cartActions from "../../redux/actions/cartActions";
+import { Alert } from 'antd';
 
 const { Meta } = Card;
 
@@ -53,6 +55,12 @@ class ProductOne extends Component {
         }
       );
     }
+  }
+  addToCart = (product) => {
+      this.props.actions.addToCart({quantity:1,product})
+      console.log( product.product_name,"eklendi");
+      
+      
   }
   componentDidUpdate() {
     if (this.props.product_data != "" && !this.state.loaded) {
@@ -107,7 +115,7 @@ class ProductOne extends Component {
                       />
                     }
                     actions={[
-                      <Button type="primary" block>
+                      <Button onClick={()=>this.addToCart(product)} type="primary" block>
                         Sepete Ekle
                       </Button>
                     ]}
@@ -150,7 +158,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       ProductPage: bindActionCreators(productActions.ProductPage, dispatch),
-      loginUser: bindActionCreators(authActions.loginUser, dispatch)
+      loginUser: bindActionCreators(authActions.loginUser, dispatch),
+      addToCart: bindActionCreators(cartActions.addToCart, dispatch),
     }
   };
 }

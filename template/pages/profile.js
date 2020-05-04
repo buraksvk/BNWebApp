@@ -1,23 +1,10 @@
-import ProfileCard from '../components/profile_page_Component/ProfileCard';
-import Header from '../components/styles/Header'
-import { Component } from 'react'
-import { Row, Col } from 'antd'
-
-
+import ProfileCard from "../components/profile_page_Component/ProfileCard";
+import { Component } from "react";
 class profilePage extends Component {
-    render() {
-        return (
-            <div>
-                <Header> </Header>
-                <Row>
-                <Col lg={4} md={1}> 
-                    </Col>
-                    <Col lg={16} md={22}>
-                        <ProfileCard />
-                    </Col>
-                </Row>
-            </div>
-        )
-    }
+  render() {
+    return (
+            <ProfileCard/>
+    );
+  }
 }
 export default profilePage;

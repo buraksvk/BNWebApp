@@ -20,7 +20,7 @@ class Deneme extends Component {
     {
     //this.props.actions.logoutUser();
     }
-    ProductInformation()
+    logOut()
     {
       //debugger;
       this.props.actions.logoutUser();

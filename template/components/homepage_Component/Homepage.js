@@ -44,7 +44,7 @@ const Homepage = () => (
             <Col lg={18} md={36}>
               <h2 style={{ marginBottom: '30px' }}>Kaybolmaya Son!</h2>
               <p style={{ marginBottom: '20px' }}>Sen de Benimki Nerede ürünlerinden edin.</p>
-              <Button size="large" href="products"><a>SİPARİŞ VER!</a> </Button>
+              <Button size="large" href="/products">SİPARİŞ VER</Button>
             </Col>
             <Col lg={6} md={12}>
               <img
