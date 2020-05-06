@@ -6,7 +6,8 @@ import {
   Input,
   Row,
   Select,
-  Card
+  Card,
+  message
 } from 'antd';
 import PropTypes from "prop-types";
 import { getConnectionLink } from "../../lib/connector";
@@ -14,6 +15,19 @@ import { connect } from "react-redux";
 import * as authActions from "../../redux/actions/authActions";
 import { bindActionCreators } from "redux";
 import * as productAddActions from '../../redux/actions/productAddActions'
+import * as profileViewActions  from '../../redux/actions/profileViewActions'
+import Router from "next/router";
+
+const errorLvl = () => {
+  message.error("Bu sayfaya girme iznine sahip değilsiniz!");
+};
+const error = () => {
+  message.error("Ürün Ekleme Sırasında Bir Hata Oluştu!");
+};
+
+const success = () => {
+  message.success("Ürün Ekleme Başarı ile Gerçekleştirildi!");
+};
 
 
 
@@ -27,57 +41,42 @@ const ProductForm = Form.create()(
         this.state = {
             device:"",
             loaded: false,
+            product: "",
         };
     }
-    componentDidMount() {
-        if (this.props.device_data == "") {
-            var paramsNames = [];
-            var paramsValues = [];
-            var obj = getConnectionLink(
-                "product",
-                paramsNames,
-                paramsValues,
-                "POST"
-            );
-            this.props.actions.productAddPage(obj);
-            console.log(this.props.product_data);
-            this.props.product_data;
+    componentDidMount()
+    {
+      setTimeout(() => {
+        if(this.props.profiledata.role_lvl !=5)
+        {
+          Router.push("/homepage") 
         }
-        else {
-            this.setState({ products: this.props.product_data, loaded: true }, function () {
-                console.log(this.state.products);
-            });
-        }
+      }, 700);
     }
     componentDidUpdate() {
-        if (this.props.product_data != "" && !this.state.loaded) {
-            this.setState({ devices: this.props.product_data, loaded: true }, function () {
-                console.log(this.state.products);
-  
-            });
-        }
     }
-   
-    
- 
-  
+
+
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
               var paramsNames = ["proType", "proDes", "proName", "proPrice","token"];
               var paramsValues = [values.proType, proDes.value, proName.value, proPrice.value,this.props.currentToken];
-              console.log(this.props.currentToken);
               var obj = getConnectionLink("addproduct", paramsNames, paramsValues, "POST");
               this.props.productAddPage(obj);
+              success();
+            }
+            else{
+              error();
             }
         });
     };
-  
+
     render() {
         const { getFieldDecorator } = this.props.form;
         const { autoCompleteResult } = this.state;
-    
+
         const formItemLayout = {
           labelCol: {
             xs: { span: 24 },
@@ -177,8 +176,8 @@ const ProductForm = Form.create()(
                             </Row>
                         </Card>
                     </div>
-  
-  
+
+
         );
     }
   }
@@ -190,8 +189,9 @@ class ProductsAdd extends React.Component{
     <ProductForm
       productAddPage = {this.props.actions.productAddPage}
       currentToken = {this.props.currentToken}
+      profiledata  = {this.props.profiledata}
     >
-      
+
     </ProductForm>);
     }
 }
@@ -199,14 +199,16 @@ class ProductsAdd extends React.Component{
 function mapStateToProps(state) {
   return {
       device_data: state.productAddReducer,
-      currentToken: state.authReducer
+      currentToken : state.authReducer,
+      profiledata : state.profileViewReducer,
   };
 }
 function mapDispatchToProps(dispatch) {
   return {
       actions: {
         productAddPage: bindActionCreators(productAddActions.productAddPage, dispatch),
-      }
+        loginUser: bindActionCreators(authActions.loginUser, dispatch),
+        profilePage: bindActionCreators(profileViewActions.ProfileInformation, dispatch),      }
   };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ProductsAdd);

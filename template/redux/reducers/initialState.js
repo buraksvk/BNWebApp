@@ -3,10 +3,13 @@ export default {
   register: "",
   profile: "",
   product: "",
-  device:"",
-  token:"",
-  password:"",
+  stock: "",
+  productadd: "",
+  profileedit: "",
   cart:[],
   shopping:"",
+  password:"",
+  device:"",
+  token:"",
 };
 //default parametreler oluşturuldu

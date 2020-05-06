@@ -5,34 +5,67 @@ import Link from "next/link";
 import Sing from "./signup";
 import Router from "next/router";
 import md5 from "md5";
-import { getConnectionLink }from '../../lib/connector'
+import { getConnectionLink } from "../../lib/connector";
+import { message } from "antd";
 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
+
+const warning = () => {
+  message.warning("Lütfen tüm zorunlu alanları doldurun.");
+};
+const success = () => {
+  message.success("Başarıyla Giriş Yapıldı.");
+};
+
+const error = () => {
+  message.error("This is a message of error");
+};
+
 const UserModal = Form.create()(
   class extends React.Component {
-    submit(err) {
-      if (!err) {
-        var paramsNames = ["email", "password","loginType"];
-        //console.log(this.state.email)
-        var hash = md5(password.value);
-        console.log(hash);
-        var paramsValues = [email.value, hash, "web" ];
-        //console.log(email.value);
-        var obj = getConnectionLink("login", paramsNames, paramsValues, "POST");
-        this.props.loginUser(obj);
-        //location.reload()
-        //Router.push("/iletisim")
+    constructor(props){
+      super(props);
+      this.state={
+        visible:false,
+        logged:false,
       }
     }
 
+    componentDidMount() {
+      var visible = this.props.visible;
+      this.setState({visible},function(){
+        visible = this.state.visible;
+      });
+    }
+    submit(err) {
+      if (!err) {
+        var paramsNames = ["email", "password","loginType"];
+        var hash = md5(password.value);
+        var paramsValues = [email.value, hash, "web" ];
+        var obj = getConnectionLink("login", paramsNames, paramsValues, "POST");
+        this.props.loginUser(obj);
+        
+      } else {
+        error();
+      }
+    }
+
+    componentDidUpdate(prevProps) {
+      if(prevProps.visible!=this.props.visible && (this.props.currentToken == "" || !this.state.logged)){
+        const visible= this.props.visible;
+        this.setState({visible})
+      } else if(this.props.currentToken != "" && !this.state.logged){
+        this.setState({visible:false,logged:true});
+      }
+    }
     render() {
-      const { visible, onCancel, onCreate, form } = this.props;
+      const { onCancel, onCreate, form } = this.props;
       const { getFieldDecorator } = form;
 
       return (
         <Modal
-          visible={visible}
+          visible={this.state.visible}
           footer={null}
           onCancel={onCancel}
           onOk={onCreate}

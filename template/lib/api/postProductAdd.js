@@ -9,6 +9,7 @@ export default async function postProductAdd(obj) {
                 console.log(res.data.error);
             } else {
                 console.log(res.data.message);
+                product = "a";
             }
         })
         .catch(err => console.log(err));

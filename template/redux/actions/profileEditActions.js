@@ -1,18 +1,19 @@
 import * as actionTypes from "./actionTypes";
-import putProfile from "../../lib/api/putProfile";
+import postProfile from "../../lib/api/postProfile";
 
-export const profileEdit = profile => {
+
+export const profileEdit = profileData => {
   return {
-    type: actionTypes.PROFILE_EDIT,
-    payload: profile
+    type: actionTypes.PROFILE_EDIT_PAGE,
+    payload: profileData
   };
 };
 
-export function putProfileEdit(obj) {
+export function profileEditPage(obj) {
   return function(dispatch) {
-    putProfile(obj).then(res => {
-      console.log(res);
+    postProfile(obj).then(res => {
       dispatch(profileEdit(res));
+      // console.log(res);
     });
   };
 }

@@ -1,27 +1,18 @@
 import * as actionTypes from "./actionTypes";
-import postRegister from '../../lib/api/postRegister';
-import {message } from "antd"
+import postRegister from "../../lib/api/postRegister";
 
-const error = () => {
-  message.error("Lütfen Giriş Yapın");
-};
-
-export const Register = (register) => {
-    return {
-        type: actionTypes.REGISTER_USER,
-        payload: register,
-    };
+export const register = register => {
+  return {
+    type: actionTypes.REGISTER_USER,
+    payload: register
+  };
 };
 
 export function registerUser(obj) {
-    return function(dispatch) {
-      postRegister(obj).then(res => {
-        dispatch(Register(res));
-        if (res != "") {
-          console.log("basarili")
-        } else {
-          error();
-        }
-      });
-    };
-  }
+  return function(dispatch) {
+    postRegister(obj).then(res => {
+      console.log(res);
+      dispatch(register(res));
+    });
+  };
+}

@@ -8,6 +8,7 @@ import { bindActionCreators } from "redux";
 import * as registerControlActions from "../../redux/actions/registerControlActions";
 import React, { Component } from "react";
 import { CheckCircle, AlertCircle } from 'react-feather';
+import Router from "next/router"
 
 
 class SuccessCard extends React.Component {
@@ -31,15 +32,15 @@ class SuccessCard extends React.Component {
         );
         this.props.actions.registerControlPage(obj);  
     }
-    
-    
+    setTimeout(() => {
+      Router.push("/homepage") 
+    }, 3000);
 }
 
 componentDidUpdate() {
-    
-        
-    
+      
 }
+
 
 
   render() {
@@ -53,7 +54,7 @@ componentDidUpdate() {
                     <br/><br/><br/><br/>
                 <strong><h3>Kayıt Başarılı Şekilde Gerçekleştirildi!</h3></strong>
                 <br/><br/>
-                <h5>Ana Sayfaya Yönlendirileceksiniz!</h5>
+                <h5> 3 Saniye Sonra Ana Sayfaya Yönlendirileceksiniz!</h5>
                 
                 <br/><br/><br/><br/>
                 <Button type="primary" href="/homepage" > Anasayfaya Git! </Button>

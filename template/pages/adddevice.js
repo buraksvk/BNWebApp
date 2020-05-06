@@ -1,16 +1,5 @@
-import AddDevices from '../components/add_device_Component/AddDevices';
-import React, { Component } from "react";
+import Add_device from '../components/add_device_Component/Add_device';
 
-class AddDevice extends React.Component {
+const Add_devices = () => <Add_device />;
 
-    render() {
-      return (
-        <div>
-          <AddDevices/>
-          
-        </div>
-      );
-    }
-  }
-  
-  export default AddDevice;
+export default Add_devices;

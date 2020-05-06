@@ -1,102 +1,106 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import * as authActions from '../../redux/actions/authActions'
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Button, Col, Input, Card, Row } from 'antd';
+import * as cartActions from "../../redux/actions/cartActions";
+import { Table, Button } from "reactstrap";
+import { Card, Row, Col } from "antd";
 
-
-class About extends Component {
-  constructor() {
-    super()
-    this.state = {
-      email: 'den55',
-      password: 'deneme'
-    };
-
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+const Paragraf = () => {
+  return (
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis
+      id consectetur purus ut faucibus. Magna ac placerat vestibulum lectus
+      mauris. Lorem donec massa sapien faucibus et molestie ac. Sed vulputate mi
+      sit amet mauris commodo quis imperdiet. Condimentum mattis pellentesque id
+      nibh tortor id. Volutpat blandit aliquam etiam erat velit scelerisque in
+      dictum non.
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis
+      id consectetur purus ut faucibus. Magna ac placerat vestibulum lectus
+      mauris.
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis
+      id consectetur purus ut faucibus. Magna ac placerat vestibulum lectus
+      mauris. 
+    </p>
+  );
+};
+const Vizyonumuz = () => {
+  return (
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis
+      id consectetur purus ut faucibus. Magna ac placerat vestibulum lectus
+      mauris. 
+    </p>
+  );
+};
+const Misyonumuz = () => {
+  return (
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Velit aliquet sagittis
+      id consectetur purus ut faucibus. Magna ac placerat vestibulum lectus
+      mauris. 
+    </p>
+  );
+};
+class CartDetail extends Component {
+  removeFromCart(product) {
+    this.props.actions.removeFromCart(product);
   }
-
-  componentDidMount() {
-    if (this.props.currentToken == "") {
-      console.log("TOKEN YOK", this.props.currentToken)
-    }
-    else {
-      console.log("TOKEN VAR", this.props.currentToken)
-    }
-  }
-
-  onSubmit = e => {
-    e.preventDefault();
-    var paramsNames = ["email", "password"];
-    //console.log(this.state.email)
-    var paramsValues = [this.state.email, this.state.password];
-    //this.props.actions.loginUser("login",paramsNames,paramsValues);
-  }
-
-  onChange = e => {
-    this.setState({ [e.target.name]: e.target.value })
-  }
-
- 
-
   render() {
-
     return (
-      <div float='center'
-      >
-        <Card>
+      <div>
+        <Card style={{margin:"50px", padding:"30px"}}>
           <Row>
-            <Col span={9}>
+            <Col sm={16}>
+              <h1 style={{marginBottom:"50px"}}>Biz Kimiz ?</h1>
+              <Paragraf />
             </Col>
-            <Col span={6}>
-              <form onSubmit={this.onSubmit}>
-                <div>
-                  <Input
-                    type="text"
-                    placeholder="email"
-                    name="email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                  />
-                </div>
-                <div>
-                  <p>   </p>
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    name="password"
-                    value={this.state.password}
-                    onChange={this.onChange}
-                  />
-                  <Button type="primary" htmlType="submit" block className="mt-3">
-                    Giriş Yap
-                        </Button>
-
-                </div>
-              </form>
-              <div>{this.props.currentToken}</div>
+            <Col xs={24} sm={12} md={6}>
+              <img src="https://provega.com.tr/wp-content/uploads/2019/10/img-kurumsal.png" alt="kurumsal_image" style={{ maxWidth:"80%", maxHeight:"80%" ,marginLeft:"30px" }} />
             </Col>
           </Row>
         </Card>
+
+        <Card style={{margin:"50px", padding:"30px"}}>
+          <Row>
+
+            <Col sm={18}>
+              <h1 style={{marginBottom:"50px"}}>Vizyonumuz</h1>
+              <Vizyonumuz />
+            </Col>
+
+          </Row>
+        </Card>
+
+        <Card style={{margin:"50px", padding:"30px"}}>
+          <Row>
+
+            <Col sm={18}>
+              <h1 style={{marginBottom:"50px"}}>Misyonumuz</h1>
+              <Misyonumuz />
+            </Col>
+
+          </Row>
+        </Card>
       </div>
-    )
+    );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    currentToken: state.authReducer,
-  };
-}
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      loginUser: bindActionCreators(authActions.loginUser, dispatch)
-    }
+      removeFromCart: bindActionCreators(cartActions.removeFromCart, dispatch),
+    },
   };
 }
-//actions aldik
-
-export default connect(mapStateToProps, mapDispatchToProps)(About);
+function mapStateToProps(state) {
+  return {
+    cart: state.cartReducer,
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(CartDetail);

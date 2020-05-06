@@ -1,16 +1,19 @@
 import axios from "axios";
-var profile = "";
+var profileData = "";
+var config = {
+    headers: { "Access-Control-Allow-Origin": "*" },
+};
 export default async function putProfile(obj) {
     await axios
         .put(obj.url, obj.data)
-        .then(res => {
+        .then((res) => {
             if (!res.data.error) {
-                token = res.data;
-                console.log(profile);
+                profileData = res.data;
+                console.log(profileData);
             } else {
                 console.log(res.data.message);
             }
         })
-        .catch(err => console.log(err));
-    return profile;
+        .catch((err) => console.log(err));
+    return profileData;
 }

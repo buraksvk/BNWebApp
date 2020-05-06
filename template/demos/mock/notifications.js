@@ -3,21 +3,11 @@ import { MessageCircle } from 'react-feather';
 
 export default [
   {
-    title: 'John Doe launched a new application',
-    description: '1 hour ago',
+    title: 'Ahmet Burak Hapaz',
+    description: 'den55@gmail.com',
     avatar: (
-      <Avatar
-        size="large"
-        style={{
-          color: 'rgb(34, 245, 0)',
-          backgroundColor: 'rgb(207, 253, 219)'
-        }}
-      >
-        <MessageCircle size={24} strokeWidth={1} />
-      </Avatar>
+      <Avatar size="large" src="/static/images/face1.jpg" />
     )
   },
- 
-  
   
 ];

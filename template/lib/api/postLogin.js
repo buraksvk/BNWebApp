@@ -7,8 +7,8 @@ export default async function postLogin(obj) {
             if (!res.data.error) {
                 token = res.data.user_token;
                 console.log(token);
-                console.log(res.config);
             } else {
+                token = "";
                 console.log(res.data.message);
             }
         })

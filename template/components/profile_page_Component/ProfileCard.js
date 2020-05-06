@@ -3,6 +3,7 @@ import { Button, Input } from "antd";
 import { Component } from "react";
 import { List, Avatar, Dropdown } from "antd";
 import { Star } from "react-feather";
+import Media from "react-media";
 import Router from "next/router";
 
 import { getConnectionLink } from "../../lib/connector";
@@ -10,6 +11,7 @@ import { connect } from "react-redux";
 import * as authActions from "../../redux/actions/authActions";
 import { bindActionCreators } from "redux";
 import * as profileViewActions from "../../redux/actions/profileViewActions";
+import Settings from "./Settings"
 
 class ProfileCard extends Component {
   constructor(props) {
@@ -19,8 +21,13 @@ class ProfileCard extends Component {
       loaded: false,
     };
   }
-  
   componentDidMount() {
+    setTimeout(() => {
+      if(this.props.currentToken =="")
+      {
+        Router.push("/homepage") 
+      }
+    }, 700);
     if (this.props.currentToken != "") {
       if (this.props.profile_data == "") {
         var paramsNames = ["token"];
@@ -32,12 +39,10 @@ class ProfileCard extends Component {
           "POST"
         );
         this.props.actions.profilePage(obj);
-        console.log(this.props.profile_data);
       } else {
         this.setState(
           { profileInfo: this.props.profile_data, loaded: true },
           function() {
-            console.log(this.state.profileInfo);
           }
         );
       }
@@ -52,12 +57,10 @@ class ProfileCard extends Component {
           "POST"
         );
         this.props.actions.profilePage(obj);
-        console.log(this.props.profile_data);
       }, 500);
     }
   }
   componentDidUpdate() {
-    console.log(this.props.currentToken);
     if (this.props.currentToken == "")
     {
       Router.push("/homepage");
@@ -66,21 +69,20 @@ class ProfileCard extends Component {
       this.setState(
         { profileInfo: this.props.profile_data, loaded: true },
         function() {
-          console.log(this.state.profileInfo);
         }
       );
     }
   }
   render() {
-    
-
     var tit = []
     tit.push("Hoşgeldin ")
     tit.push(this.state.profileInfo.user_real_name)
-    console.log(tit);
     return (
       <div>
         <Card 
+        extra={
+            <Settings/>
+          }
         title={tit}  style={{ marginTop: "10px", padding: "7px"}}>
           <Row>
             <Col lg={6} md={12}>
@@ -97,11 +99,8 @@ class ProfileCard extends Component {
               <p>E-Mail : {this.state.profileInfo.user_mail}</p>
               <p>Telefon : {this.state.profileInfo.user_phone}</p>
               <Col md={24} lg={24}></Col>
-              <Button 
-              href="/profileEdit" 
-              type="primary">
+              <Button type="primary">
                 BİLGİLERİ DÜZENLE
-
               </Button>
               </Col>
           </Row>
@@ -110,6 +109,7 @@ class ProfileCard extends Component {
     );
   }
 }
+
 function mapStateToProps(state) {
   return {
     profile_data: state.profileViewReducer,
@@ -119,7 +119,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      profilePage: bindActionCreators( profileViewActions.ProfileInformation,
+      profilePage: bindActionCreators(
+        profileViewActions.ProfileInformation,
         dispatch
       ),
       loginUser: bindActionCreators(authActions.loginUser, dispatch),

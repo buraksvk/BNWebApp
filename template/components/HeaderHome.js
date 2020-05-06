@@ -1,4 +1,15 @@
-import { Avatar, Badge, Layout, List, Menu, Col, Row } from "antd";
+import {
+  Avatar,
+  Badge,
+  Layout,
+  List,
+  Menu,
+  Col,
+  Row,
+  Button,
+  message,
+  notification,
+} from "antd";
 import {
   BarChart,
   Bell,
@@ -12,59 +23,64 @@ import {
   LogOut,
   Key,
   HelpCircle,
+  MessageCircle,
+  ShoppingBag
 } from "react-feather";
 import DashHeader, { Notification } from "./styles/Header";
 import ModalLogin from "./sign_in_sign_up_Component/login-form"; //
 import Link from "next/link";
 import MockNotifications from "../demos/mock/notifications";
 import { useAppState } from "./shared/AppProvider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-
+import ProfileSettings from "./profile_page_Component/ProfileSettings";
 //react hooks
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/authActions";
 import { getConnectionLink } from "../lib/connector";
+
 import { ProfileInformation } from "../redux/actions/profileViewActions";
+import { logoutUser } from "../redux/actions/logoutActions";
+import { removeFromCart } from "../redux/actions/cartActions";
+import styled from 'styled-components'
+
+
+//import { logoutUser } from "../redux/actions/logoutActions";
 
 const MenuItemGroup = Menu.ItemGroup;
 const { SubMenu } = Menu;
 const { Header } = Layout;
 
 const MainHeader = () => {
+  const [loading, setloading] = useState(false);
   const [state, dispatch] = useAppState();
   const [notifications] = useState(MockNotifications);
 
   const token = useSelector((state) => state.authReducer);
   const profile = useSelector((state) => state.profileViewReducer);
 
+  const cart = useSelector((state) => state.cartReducer);
+
   const dispat = useDispatch();
-  console.log(token);
+
+  if (token != "" && !loading) {
+    var paramsNames = ["token", "tokenType"];
+    var paramsValues = [token, "web"];
+    var obj = getConnectionLink("profile", paramsNames, paramsValues, "POST");
+    dispat(ProfileInformation(obj));
+    setloading(true);
+  }
+
+  function logout() {
+    dispat(logoutUser());
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 500);
+  }
   function hasToken() {
-    if (token != "") {
-      if (profile == "") {
-        var paramsNames = ["token", "tokenType"];
-        var paramsValues = [token, "web"];
-        var obj = getConnectionLink(
-          "profile",
-          paramsNames,
-          paramsValues,
-          "POST"
-        );
-        dispat(ProfileInformation(obj));
-        console.log(profile);
-      }
-      console.log(profile);
-      return (
-        <Menu.Item>
-          <Link href="logout">
-            <a>ÇIKIŞ YAP</a>
-          </Link>
-        </Menu.Item>
-      );
-    } else {
+    if (profile == "") {
       return (
         <Menu.Item>
           <ModalLogin />
@@ -72,11 +88,113 @@ const MainHeader = () => {
       );
     }
   }
+
+  function removeCart(product) {
+    dispat(removeFromCart(product));
+    notification['error']({
+      message: (product.product_name + " Başarıyla Silindi"),
+      placement: 'bottomRight'
+    });
+  }
+
+
+  function shoppingMenu() {
+    return (
+      <SubMenu title={<Badge count={cart.length}><ShoppingCart size={25} strokeWidth={1.5} /></Badge>} >
+        <Menu.Item style={{ width: "100%", height: "100%", color:"rgba(0, 0, 0, 0.65)", backgroundColor:"#ffffff", textAlign:"center",cursor:"default" }} >
+          Sepet Listesi
+        </Menu.Item>
+        <Menu.Divider />
+        {cart.map((cartItem) => (
+          <Menu.Item 
+            key={cartItem.product.product_id}
+            style={{ width: "100%", height: "100%", color:"rgba(0, 0, 0, 0.65)", backgroundColor:"#ffffff" }}
+          >
+            <Button type="danger" onClick={() => removeCart(cartItem.product)}>
+              X
+            </Button>{" "}
+            {cartItem.product.product_name} ({cartItem.quantity} Adet)
+          </Menu.Item>
+        ))}
+        <Menu.Divider />
+        <Menu.Item style={{ width: "100%", height: "100%", backgroundColor:"#ffffff", textAlign:"center" }}>
+          <a href="/shoppingcard"><ShoppingBag size="16px"/> Sepetime git</a>
+        </Menu.Item>
+      </SubMenu>
+    );
+  }
+
+  function shoppingMenuBottom() {
+    return (
+      <SubMenu title={<Badge dot><ShoppingCart size={20} strokeWidth={1.5} /></Badge>} >
+        <Menu.Item style={{ width: "100%", height: "100%", color:"rgba(0, 0, 0, 0.65)", backgroundColor:"#ffffff", textAlign:"center",cursor:"default" }} >
+          Sepet Listesi
+        </Menu.Item>
+        <Menu.Divider />
+        {cart.map((cartItem) => (
+          <Menu.Item 
+            key={cartItem.product.product_id}
+            style={{ width: "100%", height: "100%", color:"rgba(0, 0, 0, 0.65)", backgroundColor:"#ffffff" }}
+          >
+            <Button type="danger" onClick={() => removeCart(cartItem.product)}>
+              X
+            </Button>{" "}
+            {cartItem.product.product_name} ({cartItem.quantity} Adet)
+          </Menu.Item>
+        ))}
+        <Menu.Divider />
+        <Menu.Item style={{ width: "100%", height: "100%", backgroundColor:"#ffffff", textAlign:"center" }}>
+          <a href="/shoppingcard"><ShoppingBag size="16px"/> Sepetime git</a>
+        </Menu.Item>
+      </SubMenu>
+    );
+  }
+
+  function emptyCard() {
+    return (
+      <SubMenu title={<a href="/products" style={{color:"rgba(0, 0, 0, 0.65)"}}><ShoppingCart size={20} strokeWidth={1.5} /></a>}></SubMenu>
+    );
+  }
+  function hasTokenBottom() {
+    if (profile != "") {
+      return (
+        <SubMenu title={<ChevronsDown size={20} strokeWidth={1} />}>
+          {cart.length > 0 ? shoppingMenuBottom() : emptyCard()}
+          <Menu.Item >
+            <Link href="/passwordchange">
+              <a >
+                <Key size={16} /> Şifre İşlemleri
+              </a>
+            </Link>
+          </Menu.Item>
+          <Menu.Item style={{ paddingTop: "10px" }}>
+            <ProfileSettings />
+          </Menu.Item>
+          <Menu.Item>
+            <Link href="">
+              <a onClick={() => logout()}>
+                <LogOut size={16} /> ÇIKIŞ YAP
+              </a>
+            </Link>
+          </Menu.Item>
+        </SubMenu>
+      );
+    } else {
+      return (
+          <Menu.Item>
+            <ModalLogin />
+          </Menu.Item>
+      );
+    }
+  }
   function hasProfile() {
     if (profile != "") {
-      console.log(profile);
+      if (profile.user_img =="")
+      {
+         profile.user_img = "/static/images/defaultAvatar.png" 
+      }
       return (
-        <SubMenu title={<Avatar src="/static/images/face3.jpg" />}>
+        <SubMenu title={<Avatar src={profile.user_img} />}>
           <Menu.Item style={{ height: "100%" }}>
             <List
               itemLayout="horizontal"
@@ -85,7 +203,7 @@ const MainHeader = () => {
                 <Notification>
                   <List.Item>
                     <List.Item.Meta
-                      avatar={item.avatar}
+                      avatar={<Avatar size="large" src={profile.user_img} />}
                       title={
                         <a href="javascript:;">
                           {profile.user_real_name} {profile.user_surname}
@@ -103,7 +221,7 @@ const MainHeader = () => {
             <List.Item>
               <List.Item.Meta
                 title={
-                  <a href="#">
+                  <a href="/passwordchange">
                     <Key size={16} /> Şifre işlemleri
                   </a>
                 }
@@ -116,7 +234,7 @@ const MainHeader = () => {
               <List.Item.Meta
                 title={
                   <a href="#">
-                    <HelpCircle size={16} /> Yardım
+                    <MessageCircle size={16} /> Özel Mesajlarım
                   </a>
                 }
               />
@@ -124,13 +242,7 @@ const MainHeader = () => {
           </Menu.Item>
           <Menu.Item style={{ height: "100%" }}>
             <List.Item>
-              <List.Item.Meta
-                title={
-                  <a href="#">
-                    <Settings size={16} /> Ayarlarım
-                  </a>
-                }
-              />
+              <ProfileSettings />
             </List.Item>
           </Menu.Item>
           <Menu.Item style={{ height: "100%" }}>
@@ -149,7 +261,7 @@ const MainHeader = () => {
             <List.Item>
               <List.Item.Meta
                 title={
-                  <a href="#">
+                  <a onClick={() => logout()}>
                     <LogOut size={16} /> Çıkış
                   </a>
                 }
@@ -163,25 +275,12 @@ const MainHeader = () => {
     }
   }
   function hasLevel() {
-    if (
-      profile.role_lvl == 1 ||
-      profile.role_lvl == 2 ||
-      profile.role_lvl == 3 ||
-      profile.role_lvl == 4 ||
-      profile.role_lvl == 5
-    ) {
-      return (
-        <Menu.Item>
-          <Link href="/homepage">
-            <ShoppingCart />
-          </Link>
-        </Menu.Item>
-      );
-    } else {
-      return null;
-    }
+      if (cart.length != 0) {
+        return shoppingMenu();
+      } else {
+        return emptyCard();
+      }
   }
-  console.log(token);
   return (
     <DashHeader>
       <Header>
@@ -196,7 +295,7 @@ const MainHeader = () => {
         <Link href="/homepage">
           <a className="brand">
             <Triangle size={24} strokeWidth={1} />
-            <strong className="mx-1 text-black">{state.name}</strong>
+            <strong className="mx-1 text-black">BN</strong>
           </a>
         </Link>
 
@@ -219,32 +318,16 @@ const MainHeader = () => {
 
           {!state.mobile && (
             <Menu.Item>
+              <Link href="about">
+                <a>HAKKIMIZDA</a>
+              </Link>
+            </Menu.Item>
+          )}
+
+          {!state.mobile && (
+            <Menu.Item>
               <Link href="contact">
                 <a>İLETİŞİM</a>
-              </Link>
-            </Menu.Item>
-          )}
-
-          {!state.mobile && (
-            <Menu.Item>
-              <Link href="productadd">
-                <a>Ürün Ekleme</a>
-              </Link>
-            </Menu.Item>
-          )}
-
-          {!state.mobile && (
-            <Menu.Item>
-              <Link href="stocks">
-                <a>STOK GÖRÜNTÜLEME</a>
-              </Link>
-            </Menu.Item>
-          )}
-
-          {!state.mobile && (
-            <Menu.Item>
-              <Link href="about">
-                <a>{token}</a>
               </Link>
             </Menu.Item>
           )}
@@ -278,27 +361,14 @@ const MainHeader = () => {
         <span className="mr-auto" />
 
         <Menu mode="horizontal" className="menu-divider">
-          {!state.mobile && hasProfile()}
 
           {!state.mobile && hasLevel()}
 
+          {!state.mobile && hasProfile()}
+
           {!state.mobile && hasToken()}
 
-          {state.mobile && (
-            <SubMenu title={<ChevronsDown size={20} strokeWidth={1} />}>
-              <Menu.Item>
-                <User />
-              </Menu.Item>
-              <Menu.Item>
-                <ProfileSettings />
-              </Menu.Item>
-              <Menu.Item>
-                <Link href="logout">
-                  <a>ÇIKIŞ YAP</a>
-                </Link>
-              </Menu.Item>
-            </SubMenu>
-          )}
+          {state.mobile && hasTokenBottom()}
         </Menu>
       </Header>
     </DashHeader>
@@ -308,8 +378,14 @@ const MainHeader = () => {
 const mapStateToProps = (state) => ({
   currentToken: state.authReducer,
   profile: state.profileViewReducer,
+  cart: state.cartReducer,
 });
 
-const mapDispatchToProps = { loginUser, ProfileInformation };
+const mapDispatchToProps = {
+  loginUser,
+  ProfileInformation,
+  logoutUser,
+  removeFromCart,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainHeader);

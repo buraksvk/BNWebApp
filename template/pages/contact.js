@@ -1,4 +1,3 @@
-import Header from '../components/styles/Header'
 
 import { Component } from 'react'
 import StatCard from '../components/shared/StatCard';
@@ -20,8 +19,8 @@ import {
   
   const { TextArea } = Input;
   
-  const MY_API = 'AIzaSyBsBmHQjXxz2uyMIyUHtVU8h3iuQWQ7xC4'
-    let _url = `https://www.google.com/maps/embed/v1/place?key=${MY_API}&q=40.7127837,-74.0059413`
+  const MY_API = 'AIzaSyBgD23YwqAJet9vHzbUinYYaodOiff8y30'
+    let _url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBgD23YwqAJet9vHzbUinYYaodOiff8y30&q=40.7127837,-74.0059413`
   
   
 
@@ -29,9 +28,17 @@ class Iletisim extends Component {
     render() {
         return (
         <div>
-          <Header> </Header>
-          <Row gutter={16}>
-            <Col xs={24} sm={12} md={6}>
+
+        <Row gutter={16} id="components-button-demo">
+        <Card bodyStyle={{ padding: 0 }} style={{ marginBottom:'20px'}}>
+
+                     <iframe frameBorder="20" style={{ width: "100%", height: "500px"}} 
+                            src={_url}>
+                        </iframe>   
+                    
+                    </Card> 
+                    <Row gutter={16} style={{margin:"20px"}}>
+            <Col xs={24} sm={12} md={6} >
             <StatCard
                 type="fill"
                 title="Telefon"
@@ -72,9 +79,8 @@ class Iletisim extends Component {
             />
             </Col>
         </Row>
-        <Row gutter={16} id="components-button-demo">
-                <Col lg={12} md={24}>
-                    <Card  style={{ marginBottom:'20px'}}>
+
+                    <Card  style={{ margin:'30px'}}>
                     <Divider orientation="left">
                         <small>İletişim Formu</small>
                      </Divider>
@@ -82,27 +88,14 @@ class Iletisim extends Component {
                      <Input style={{ marginBottom:'20px'}} placeholder="İsim " />
                      <Input style={{ marginBottom:'20px'}} placeholder="Email " />
                      <Input style={{ marginBottom:'20px'}} placeholder="Konu" />
-                     <TextArea rows={4} style={{ marginBottom:'20px'}} placeholder="Metininizi Giriniz" />
+                     <TextArea rows={4} style={{ marginBottom:'20px'}} placeholder="Metninizi Giriniz" />
                      </div>
                     </Card>   
+                   
                     <Card bodyStyle={{ padding: 0 }} style={{ marginBottom:'20px'}}>
                         
                     </Card> 
-                </Col>
-                <Col lg={12} md={24}>
-                    <Card bodyStyle={{ padding: 0 }} style={{ marginBottom:'20px'}}>
-                    <Divider orientation="left">
-                        <small>Google Maps</small>
-                     </Divider>
-                     <iframe frameBorder="0" style={{ width: "100%", height: "450"}} 
-                            src={_url}>
-                        </iframe>   
-                    
-                    </Card> 
-                    <Card bodyStyle={{ padding: 0 }} style={{ marginBottom:'20px'}}>
-                        
-                    </Card> 
-                </Col>
+
             </Row>
         </div>
           

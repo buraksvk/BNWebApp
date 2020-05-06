@@ -8,6 +8,7 @@ import {
   Select,
   Card,
   Divider,
+  message,
 } from "antd";
 import PropTypes from "prop-types";
 import { getConnectionLink } from "../../lib/connector";
@@ -17,11 +18,19 @@ import { bindActionCreators } from "redux";
 import * as passwordChangeActions from "../../redux/actions/passwordChangeActions";
 import * as profileViewActions from '../../redux/actions/profileViewActions'
 import md5 from 'md5';
+import Router from "next/router"
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
 
+const error = () => {
+  message.error("Şifre Değişimi Sırasında Bir Hata Oluştu!");
+};
+
+const success = () => {
+  message.success("Şifre Değişimi Başarı ile Gerçekleştirildi!");
+};
 
 const ProductForm = Form.create()(
   
@@ -34,27 +43,18 @@ const ProductForm = Form.create()(
       };
     }
     componentDidMount() {
-      if (this.props.password_data == "") {
-          var paramsNames = [];
-          var paramsValues = [];
-          var obj = getConnectionLink(
-              "changepassword",
-              paramsNames,
-              paramsValues,
-              "PUT"
-          );
-          this.props.actions.passwordChangePage(obj);
-          console.log(this.props.profile.user_password);
-          this.props.password_data;
-      }
-      else {
-          this.setState({ password: this.props.profile.user_password, loaded: true }, function () {
-              console.log(this.state.password);
-          });
-      }
+      setTimeout(() => {
+        if(this.props.currentToken =="")
+        {
+          error();
+          Router.push("/homepage") 
+        }
+      }, 700);
+
+      
   }
   componentDidUpdate() {
-    console.log(this.props.profile.user_password)
+    
 
       if (this.props.profile.user_password != "" && !this.state.loaded) {
           
@@ -67,30 +67,28 @@ const ProductForm = Form.create()(
 
   handleSubmit = (err,values)  => {
     if (!err) {
-      if(this.props.profile.user_id != ""){ 
+      if(this.props.profile.user_id != "" && oldPass.value != newPass.value ){ 
       var paramsNames = ["oldPass", "newPass", "newPassAgain","id"];
       var oldPassHash = md5(oldPass.value);
       
       var newPassHash = md5(newPass.value);
       var newPassAgainHash = md5(newPassAgain.value);
       var paramsValues = [oldPassHash, newPassHash, newPassAgainHash, this.props.profile.user_id];
-      console.log(this.props.currentToken);
 
-      console.log(newPassHash, newPassAgainHash, oldPassHash, this.props.profile.user_id);
-      
        var obj = getConnectionLink(
          "changepassword",
          paramsNames,
          paramsValues,
          "POST"
        );
-      console.log(newPassHash)
-      console.log(newPassAgainHash)
       this.props.passwordChangePage(obj);
-      console.log("id buldu!!!")}
+      success();
+
+    }
+      
       else
       {
-        console.log("Hata!!!")
+        error();
       }
     }
   }
@@ -157,7 +155,7 @@ const ProductForm = Form.create()(
                   <FormItem
                     label="Eski Şifreniz:"
                     {...formItemLayout}
-                    hasFeedback
+                    
                   >
                     {getFieldDecorator("oldPass", {
                       rules: [
@@ -165,12 +163,8 @@ const ProductForm = Form.create()(
                           required: true,
                           message: "Eski Şifreniz boş bırakılamaz",
                         },
-                        {                                    
-                          pattern: "[A-Za-z0-9]{4}",
-                          message: "Lütfen Soyisim değeri En Az 4 Karakterden Oluşsun!"
-                        }
                       ],
-                    })(<Input placeholder="Eski Şifrenizi giriniz." 
+                    })(<Input.Password placeholder="Eski Şifrenizi giriniz." 
                     onChange={e => {
                       this.setState({ [e.target.name]: e.target.value });
                     }} />)}
@@ -183,8 +177,12 @@ const ProductForm = Form.create()(
                           required: true,
                           message: "Yeni Şifreniz boş bırakılamaz",
                         },
+                        {                                    
+                          pattern: "^(?=.*[A-Z])(?=.*[0-9]).{8,15}$",
+                          message: "Yeni şifreniz en az 8 karakterden oluşmalı. Ayrıca 1 Büyük Harf Ve Sayı İçermeli!"
+                        }
                       ],
-                    })(<Input placeholder="Yeni Şifrenizi giriniz." 
+                    })(<Input.Password placeholder="Yeni Şifrenizi giriniz." 
                     onChange={e => {
                       this.setState({ [e.target.name]: e.target.value });
                     }}/>)}
@@ -206,7 +204,7 @@ const ProductForm = Form.create()(
                           }
                       }
                       ],
-                    })(<Input placeholder="Yeni Şifrenizi Tekrar giriniz." 
+                    })(<Input.Password placeholder="Yeni Şifrenizi Tekrar giriniz." 
                     onChange={e => {
                       this.setState({ [e.target.name]: e.target.value });
                     }}/>)}

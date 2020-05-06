@@ -1,5 +1,5 @@
 import * as actionTypes from "./actionTypes";
-import putChangePassword from "../../lib/api/putChangePassword";
+import postChangePassword from "../../lib/api/postChangePassword";
 
 export const passwordChange = password => {
   return {
@@ -10,9 +10,10 @@ export const passwordChange = password => {
 
 export function passwordChangePage(obj) {
   return function(dispatch) {
-      putChangePassword(obj).then(res => {
+      postChangePassword(obj).then(res => {
       console.log(res);
       dispatch(passwordChange(res));
+      
     });
   };
 }
