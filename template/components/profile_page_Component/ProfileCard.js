@@ -95,6 +95,7 @@ class ProfileCard extends Component {
               <h2 style={{ marginBottom: "30px" }}>
                 {this.state.profileInfo.user_real_name}{" "}
                 {this.state.profileInfo.user_surname}
+                
               </h2>
               <p>E-Mail : {this.state.profileInfo.user_mail}</p>
               <p>Telefon : {this.state.profileInfo.user_phone}</p>

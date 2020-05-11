@@ -21,6 +21,8 @@ import * as shoppingActions from "../../redux/actions/shoppingActions";
 import * as cartActions from "../../redux/actions/cartActions";
 import * as profileViewActions from "../../redux/actions/profileViewActions";
 import Router from "next/router";
+import Cards from 'react-credit-cards';
+
 function handleChange(value) {
 }
 
@@ -520,3 +522,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CartsAdd);
+
